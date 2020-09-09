@@ -27,7 +27,7 @@ class SSHAuthenticator(Authenticator):
         try:
             session.open()
             key = rsa.generate_private_key(
-                backend=default_backend(), public_exponent=655537, key_size=2048
+                backend=default_backend(), public_exponent=65537, key_size=2048
             )
             private_key = key.private_bytes(
                 serialization.Encoding.PEM,
