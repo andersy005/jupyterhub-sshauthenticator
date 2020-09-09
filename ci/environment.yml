@@ -1,0 +1,9 @@
+name: ssh-auth-dev
+channels:
+  - conda-forge
+dependencies:
+  - cryptography
+  - fabric
+  - jupyterhub
+  - tornado
+  - traitlets

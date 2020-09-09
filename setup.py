@@ -35,8 +35,7 @@ setup(
     keywords='jupyterhub, authenticator',
     name='jupyterhub-sshauthenticator',
     packages=find_packages(),
-    entry_points={
-        },
+    entry_points={},
     url='https://github.com/andersy005/sshauthenticator',
     project_urls={
         'Documentation': 'https://github.com/andersy005/sshauthenticator',
