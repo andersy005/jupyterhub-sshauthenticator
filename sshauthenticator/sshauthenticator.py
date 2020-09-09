@@ -51,7 +51,7 @@ class SSHAuthenticator(Authenticator):
         except paramiko.AuthenticationException:
             return
 
-    def _write_key(self, keys):
+    def _write_keys(self, keys):
         for key, file_path in keys:
             with open(file_path, 'w') as f:
                 f.write(key)
