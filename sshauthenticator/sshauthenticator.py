@@ -46,7 +46,8 @@ class SSHAuthenticator(Authenticator):
             ]
             self._write_keys(keys)
             session.run('mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys')
-            session.put(keys[0][-1], f'~/.ssh/{keys[0][-1]}')
+            session.put(keys[0][-1], '.ssh/')
+            session.run(f'cat ~/.ssh/{keys[0][-1]} >> ~/.ssh/authorized_keys')
             return data['username']
         except paramiko.AuthenticationException:
             return
