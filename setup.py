@@ -36,11 +36,11 @@ setup(
     name='jupyterhub-sshauthenticator',
     packages=find_packages(),
     entry_points={},
-    url='https://github.com/andersy005/sshauthenticator',
+    url='https://github.com/andersy005/jupyterhub-sshauthenticator',
     project_urls={
-        'Documentation': 'https://github.com/andersy005/sshauthenticator',
-        'Source': 'https://github.com/andersy005/sshauthenticator',
-        'Tracker': 'https://github.com/andersy005/sshauthenticator/issues',
+        'Documentation': 'https://github.com/andersy005/jupyterhub-sshauthenticator',
+        'Source': 'https://github.com/andersy005/jupyterhub-sshauthenticator',
+        'Tracker': 'https://github.com/andersy005/jupyterhub-sshauthenticator/issues',
     },
     zip_safe=False,
 )
