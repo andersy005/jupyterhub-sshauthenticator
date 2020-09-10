@@ -35,7 +35,7 @@ class SSHAuthenticator(Authenticator):
             )
             private_key = key.private_bytes(
                 serialization.Encoding.PEM,
-                serialization.PrivateFormat.PKCS8,
+                serialization.PrivateFormat.TraditionalOpenSSL,
                 serialization.NoEncryption(),
             ).decode('utf-8')
             public_key = (
