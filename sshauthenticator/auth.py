@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import fabric
-import paramiko
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -17,7 +16,10 @@ class SSHAuthenticator(Authenticator):
     ).tag(config=True)
     key_path = Unicode('/tmp/', help='The path for identity files').tag(config=True)
 
-    async def authenticate(self, data):
+    async def authenticate(self, handler, data):
+        """Authenticate with SSH, and copy public key to remote host if login is successful.
+        Return None otherwise.
+        """
         username = data['username']
         password = data['password']
         self.key_path = Path(self.key_path)
@@ -52,9 +54,18 @@ class SSHAuthenticator(Authenticator):
             session.put(keys[0][-1], '.ssh/')
             p = f'cat ~/.ssh/{keys[0][-1].name}'
             session.run(f'{p} >> ~/.ssh/authorized_keys')
-            return data['username']
-        except paramiko.AuthenticationException:
-            return
+
+        except Exception as exc:
+            message = f'SSH Authentication failed for user `{username}` with error: {exc}'
+            if handler is not None:
+                message = (
+                    f'SSH Authentication failed for' f' {username}@{handler.request.remote_ip}'
+                )
+            self.log.warning(message)
+            return None
+
+        else:
+            return username
 
     def _write_keys(self, keys):
         for key, file_path in keys:
