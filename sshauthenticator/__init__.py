@@ -1,7 +1,7 @@
 # flake8: noqa
 from pkg_resources import DistributionNotFound, get_distribution
 
-from sshauthenticator.sshauthenticator import SSHAuthenticator
+from sshauthenticator.auth import SSHAuthenticator
 
 try:
     __version__ = get_distribution(__name__).version

@@ -15,11 +15,13 @@ class SSHAuthenticator(Authenticator):
     server_port = Int(
         help='Port on which to contact SSH server.',
     ).tag(config=True)
-    identify_file_path = Unicode('/tmp/', help='The path for identity files').tag(config=True)
+    key_path = Unicode('/tmp/', help='The path for identity files').tag(config=True)
 
-    async def authenticate(self, handler, data):
+    async def authenticate(self, data):
         username = data['username']
         password = data['password']
+        self.key_path = Path(self.key_path)
+        self.key_path.mkdir(parents=True, exist_ok=True)
 
         session = fabric.Connection(
             self.server_address, user=username, connect_kwargs={'password': password}
@@ -41,13 +43,15 @@ class SSHAuthenticator(Authenticator):
             )
 
             keys = [
-                (public_key, Path(self.identify_file_path) / f'{username}_jhub.pub.key'),
-                (private_key, Path(self.identify_file_path) / f'{username}_jhub.key'),
+                (public_key, (self.key_path / f'{username}_jhub.pub.key').expanduser()),
+                (private_key, (self.key_path / f'{username}_jhub.key').expanduser()),
             ]
             self._write_keys(keys)
+            # Copy generated public key to remote host
             session.run('mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys')
             session.put(keys[0][-1], '.ssh/')
-            session.run(f'cat ~/.ssh/{keys[0][-1]} >> ~/.ssh/authorized_keys')
+            p = f'cat ~/.ssh/{keys[0][-1].name}'
+            session.run(f'{p} >> ~/.ssh/authorized_keys')
             return data['username']
         except paramiko.AuthenticationException:
             return
@@ -55,5 +59,5 @@ class SSHAuthenticator(Authenticator):
     def _write_keys(self, keys):
         for key, file_path in keys:
             with open(file_path, 'w') as f:
-                f.write(key)
+                f.write(f'{key}\n')
             os.chmod(file_path, 0o600)
