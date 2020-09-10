@@ -22,8 +22,8 @@ class SSHAuthenticator(Authenticator):
         """
         username = data['username']
         password = data['password']
-        self.key_path = Path(self.key_path)
-        self.key_path.mkdir(parents=True, exist_ok=True)
+        key_path = Path(self.key_path)
+        key_path.mkdir(parents=True, exist_ok=True)
 
         session = fabric.Connection(
             self.server_address, user=username, connect_kwargs={'password': password}
@@ -45,8 +45,8 @@ class SSHAuthenticator(Authenticator):
             )
 
             keys = [
-                (public_key, (self.key_path / f'{username}_jhub.pub.key').expanduser()),
-                (private_key, (self.key_path / f'{username}_jhub.key').expanduser()),
+                (public_key, (key_path / f'{username}_jhub.pub.key').expanduser()),
+                (private_key, (key_path / f'{username}_jhub.key').expanduser()),
             ]
             self._write_keys(keys)
             # Copy generated public key to remote host
